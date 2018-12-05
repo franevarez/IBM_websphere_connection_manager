@@ -1,101 +1,114 @@
-# -*- encoding: utf-8 -*-
-#!/usr/bin/env python3
+# -*- coding: utf-8 *-*
 
 import os
 import sys
-import win32com.client
 
-#directorio de properties
-configs = open("config.txt", "r")
+class aplicacion():
+    def __init__(self, dir_aplication, was_location):
+        self.dir_app = dir_aplication
+        self.dir = was_location
+        self.updateStatus()
 
-bin = configs.readline().strip()
-server = configs.readline().strip()
-dir = configs.readline().strip()
+    def updateStatus(self):
+        
+        if os.path.exists(self.dir+'DES-'+self.dir_app):
+            self.conexionActual = 'QAS'
 
-#Nombres de carpetas de aplicacionea
-dirProd = configs.readline().strip()
-dirMotor = configs.readline().strip()
-dirConsulta = configs.readline().strip()
-configs.close()
+        if os.path.exists(self.dir+'QAS-'+self.dir_app):
+            self.conexionActual = 'DES'
 
-banderaReStart = False
-shell = win32com.client.Dispatch("WScript.Shell")
+    def changeConnection(self):
+        print("intenta hacer el cambio")
+        if self.conexionActual == 'DES':
+            self.cambioQAS()
+        if self.conexionActual == 'QAS':
+            self.cambioDES()
+        self.updateStatus()
 
-#Funciones para cambiar los directorios de conexiones
-def cambioDES(dirChange):
-    os.rename(dir+dirChange, dir+"QAS-"+dirChange)
-    os.rename(dir+"DES-"+dirChange, dir+dirChange)
+    #Funciones para cambiar los directorios de conexiones
+    def cambioDES(self):
+        print("intenta hacer el DES")
+        os.rename(self.dir+self.dir_app, self.dir+"QAS-"+self.dir_app)
+        os.rename(self.dir+"DES-"+self.dir_app, self.dir+self.dir_app)
 
-def cambioQAS(dirChange):
-    os.rename(dir+dirChange, dir+"DES-"+dirChange)
-    os.rename(dir+"QAS-"+dirChange, dir+dirChange)
- 
-while True:
-    #Se determina que conexion se tiene asignada
-    if os.path.exists(dir+'DES-'+dirProd):
-        conexionActualPortal = 'QAS'
+    def cambioQAS(self):
+        print("intenta hacer el QAS")
+        os.rename(self.dir+self.dir_app, self.dir+"DES-"+self.dir_app)
+        os.rename(self.dir+"QAS-"+self.dir_app, self.dir+self.dir_app)
 
-    if os.path.exists(dir+'QAS-'+dirProd):
-        conexionActualPortal = 'DES'
+def showMenu(portal,motor,consultas,server,server_location):
+    banderaReStart = False #
+    while True:
 
-    if os.path.exists(dir+'DES-'+dirMotor):
-        conexionActualMotor = 'QAS'
+        if os.name == "nt":
+            os.system("cls")
 
-    if os.path.exists(dir+'QAS-'+dirMotor):
-        conexionActualMotor = 'DES'
+        elif os.name == "posix":
+            os.system("clear")
 
-    if os.path.exists(dir+'DES-'+dirConsulta):
-        conexionActualConsultas = 'QAS'
+            #Menu de seleccion
+        print("Elige a que aplicacion le deseas cambiar la conexion\n")
+        print('1 .- Portal: ', portal.conexionActual)
+        print('2 .- Motor: ', motor.conexionActual)
+        print('3 .- Consultas: ', consultas.conexionActual)
+        print("\n\n0 .- Salir\n\n")
 
-    if os.path.exists(dir+'QAS-'+dirConsulta):
-        conexionActualConsultas = 'DES'
+        #input de opcion seleccionada
+        ConexionInput = int(input('¿Que conexion desea cambiar?: '))
 
-    #Menu de seleccion
-    print("Elige a que aplicacion le deseas cambiar la conexion\n")
-    print('1 .- Portal: ', conexionActualPortal)
-    print('2 .- Motor: ', conexionActualMotor)
-    print('3 .- Consultas: ', conexionActualConsultas)
-    print("\n\n0 .- Salir\n\n")
+        #Compara que conexion tiene asignada para realizar el cambio}
 
-    #input de opcion seleccionada
-    ConexionInput = int(input('¿Que conexion desea cambiar?: '))
+        if ConexionInput != 0:
+            banderaReStart = True
 
-    #Compara que conexion tiene asignada para realizar el cambio
-
-    #Opcion uno para el portal
-    if ConexionInput != 0:
-        banderaReStart = True
-
-    if ConexionInput == 1:
-        print('Cambiando conexion del portal')
-        if conexionActualPortal == 'DES':
-            cambioQAS(dirProd)
-
-        if conexionActualPortal == 'QAS':
-            cambioDES(dirProd)
-
-    #Opcion dos para el motor
-    elif ConexionInput == 2:
-        if conexionActualMotor == 'DES':
-            cambioQAS(dirMotor)
-        if conexionActualMotor == 'QAS':
-            cambioDES(dirMotor)
-
-    #Opcion tres para consultas
-    elif ConexionInput == 3:
-        if conexionActualConsultas == 'DES':
-            cambioQAS(dirConsulta)
-        if conexionActualConsultas == 'QAS':
-            cambioDES(dirConsulta)
-
-    elif ConexionInput == 0:
-        print('\n\nQue tengas en buen día ;)')
-        if banderaReStart:
-            os.system(bin+'\stopServer '+server)
-            #os.system(bin+'\startServer '+server) reinicia el servidor pero eclipse no lo detecta :,C
-            #shell.AppActivate("firefox")
-            #shell.SendKeys('^+R', 0)
-        exit()
-    #Error en caso de elegir opcion no disponible
-    else:
+        if ConexionInput == 0:
+            print('\n\nQue tengas en buen día ;)')
+            if banderaReStart:
+                os.system(server_location+'\\stopServer '+server)
+                #os.system(bin+'\startServer '+server) reinicia el servidor pero eclipse no lo detecta :,C
+                #shell.AppActivate("firefox")
+                #shell.SendKeys('^+R', 0)
+            exit()
+        elif ConexionInput  == 1:
+            print('Cambiando conexion del portal')
+            portal.changeConnection()
+        elif ConexionInput  == 1:
+            motor.changeConnection()
+        elif ConexionInput == 1:
+            consultas.changeConnection()
+        else:
             print('Opcion no valida. ')
+
+def config_with_command(comandos,portal,motor,consultas):
+    try:
+        comands = [k.lower() for k in comandos]
+        aplicacion = str(comands[comands.index("-a")+1])
+        conecction = comands[comands.index("-c")+1].upper()
+
+        print(aplicacion)
+        print(conecction)
+
+        if (aplicacion == "portal" or aplicacion == 'productos'):
+                if(conecction != portal.conexionActual):
+                    portal.changeConnection
+                else:
+                    print('conexion ya se encontraba configurada')
+                return True
+        elif (aplicacion == "motor"):
+            if(conecction != motor.conexionActual):
+                portal.changeConnection
+            else:
+                print('conexion ya se encontraba configurada')
+            return True
+        elif (aplicacion == "consultas"):
+            if(conecction != consultas.conexionActual):
+                portal.changeConnection
+            else:
+                print('conexion ya se encontraba configurada')
+            return True
+        else:
+            print('los argumentos no son correctos')
+            return False
+    except:
+        print('\nlos argumentos no son correctos')
+        return False
