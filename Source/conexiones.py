@@ -4,9 +4,10 @@ import os
 import sys
 
 class aplicacion():
-    def __init__(self, dir_aplication, was_location):
+    def __init__(self, name, dir_aplication, was_location):
         self.dir_app = dir_aplication
         self.dir = was_location
+        self.name = name
         self.updateStatus()
 
     def updateStatus(self):
@@ -36,7 +37,7 @@ class aplicacion():
         os.rename(self.dir+self.dir_app, self.dir+"DES-"+self.dir_app)
         os.rename(self.dir+"QAS-"+self.dir_app, self.dir+self.dir_app)
 
-def showMenu(portal,motor,consultas,server,server_location):
+def showMenu(aplicaciones ,server,server_location):
     banderaReStart = False #
     while True:
 
@@ -48,10 +49,15 @@ def showMenu(portal,motor,consultas,server,server_location):
 
             #Menu de seleccion
         print("Elige a que aplicacion le deseas cambiar la conexion\n")
-        print('1 .- Portal: ', portal.conexionActual)
-        print('2 .- Motor: ', motor.conexionActual)
-        print('3 .- Consultas: ', consultas.conexionActual)
-        print("\n\n0 .- Salir\n\n")
+
+        indice = 1
+        for obc_aplication in aplicaciones:
+            print((indice), '.- ', obc_aplication.name,
+                  ': ',
+                   obc_aplication.conexionActual)
+            indice += 1
+
+        print("\n0 .- Salir\n\n")
 
         #input de opcion seleccionada
         ConexionInput = int(input('¿Que conexion desea cambiar?: '))
@@ -69,17 +75,11 @@ def showMenu(portal,motor,consultas,server,server_location):
                 #shell.AppActivate("firefox")
                 #shell.SendKeys('^+R', 0)
             exit()
-        elif ConexionInput  == 1:
-            print('Cambiando conexion del portal')
-            portal.changeConnection()
-        elif ConexionInput  == 1:
-            motor.changeConnection()
-        elif ConexionInput == 1:
-            consultas.changeConnection()
         else:
-            print('Opcion no valida. ')
+            ConexionInput -=1
+            aplicaciones[ConexionInput].changeConnection()
 
-def config_with_command(comandos,portal,motor,consultas):
+def config_with_command(comandos, aplications_list):
     try:
         comands = [k.lower() for k in comandos]
         aplicacion = str(comands[comands.index("-a")+1])
@@ -88,27 +88,18 @@ def config_with_command(comandos,portal,motor,consultas):
         print(aplicacion)
         print(conecction)
 
-        if (aplicacion == "portal" or aplicacion == 'productos'):
-                if(conecction != portal.conexionActual):
-                    portal.changeConnection
+        for list_aplications in aplications_list:
+            palabras = list_aplications.name
+            print(aplicacion.lower in str(list_aplications.name))
+            if aplicacion.lower in list_aplications.name:
+                print(">>>>>>>>>")
+                if conecction != list_aplications.conexionActual:
+                    list_aplications.changeConnection()
+                    print('Cambio de conexion correcta')
+                    return True
                 else:
                     print('conexion ya se encontraba configurada')
-                return True
-        elif (aplicacion == "motor"):
-            if(conecction != motor.conexionActual):
-                portal.changeConnection
-            else:
-                print('conexion ya se encontraba configurada')
-            return True
-        elif (aplicacion == "consultas"):
-            if(conecction != consultas.conexionActual):
-                portal.changeConnection
-            else:
-                print('conexion ya se encontraba configurada')
-            return True
-        else:
-            print('los argumentos no son correctos')
-            return False
+                    return True
     except:
         print('\nlos argumentos no son correctos')
         return False

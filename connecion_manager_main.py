@@ -9,6 +9,10 @@ import win32com.client
 
 import source.conexiones as SC
 
+
+aplications_list = []
+banderaReStart = False
+
 instrucciones = '''
     -MENU,-menu         --Show menu
     -a,-A <aplication>  --firs command for selecct aplication
@@ -29,29 +33,21 @@ server_name = Config['server']['server_name']
 was_location = Config['server']['was_location']
 
 #direcctories of aplications
-dirProd = Config['applications']['portal_location']
-dirMotor = Config['applications']['motor_location']
-dirConsulta = Config['applications']['consultas_location']
-
-banderaReStart = False
-
-portal = SC.aplicacion(dirProd, was_location)
-motor = SC.aplicacion(dirMotor, was_location)
-consultas = SC.aplicacion(dirConsulta, was_location)
+for app_list in Config['applications']:
+    aplications_list.append(SC.aplicacion(
+        app_list, Config['applications'][app_list], was_location))
 
 if len(sys.argv) > 1:
     if sys.argv[1] == '-menu' or sys.argv[1] == '-MENU':
         print("Estas entrando al menu")
-        SC.showMenu(
-            portal, motor, consultas, server_name, server_location)
+        SC.showMenu(aplications_list, server_name, server_location)
 
     elif sys.argv[1] == '-gui' or sys.argv[1] == '-GUI':
         pass
     else:
         if SC.config_with_command(
-           sys.argv, portal, motor, consultas):
+           sys.argv, aplications_list):
            exit()
-
         else:
             print(instrucciones)
 else:
