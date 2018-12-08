@@ -89,7 +89,6 @@ def config_with_command(comandos, aplications_list):
         print(conecction)
 
         for list_aplications in aplications_list:
-            palabras = list_aplications.name
             print(aplicacion.lower in str(list_aplications.name))
             if aplicacion.lower in list_aplications.name:
                 print(">>>>>>>>>")
