@@ -1,6 +1,0 @@
-C:\IBM\WebSphere\AppServer\bin
-server1
-C:/IBM/WebSphere/AppServer/profiles/default/zntwasconfig/
-zntappportalventa_productos
-portalventa_motor
-portalventa_consultas
