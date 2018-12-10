@@ -9,7 +9,8 @@ import sys
     
 # import win32com.client
 
-import source.conexiones as SC
+import source.conexiones as conexiones_
+import source.conexiones_gui as conexiones_gui
 
 aplications_list = []
 connections_list = []
@@ -40,19 +41,19 @@ connections_list = Config['connections']
 
 # direcctories of aplications
 for app_list in Config['applications']:
-    aplications_list.append(SC.aplicacion(
+    aplications_list.append(conexiones_.aplicacion(
                             app_list, Config['applications'][app_list], was_location,
                             connections_list[app_list]))
 
 if len(sys.argv) > 1:
     if sys.argv[1] == '-menu' or sys.argv[1] == '-MENU':
         print("Estas entrando al menu")
-        SC.showMenu(aplications_list, server_name, server_location)
+        conexiones_.showMenu(aplications_list, server_name, server_location)
 
     elif sys.argv[1] == '-gui' or sys.argv[1] == '-GUI':
-        pass
+        conexiones_gui.showGui(aplications_list, server_name, server_location)
     else:
-        if SC.config_with_command(sys.argv, aplications_list):
+        if conexiones_.config_with_command(sys.argv, aplications_list, server_name, server_location):
             exit()
         else:
             print(instrucciones)
