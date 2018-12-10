@@ -1,7 +1,5 @@
 # -*- coding: utf-8 *-*
 
-debug_mode = True
-
 # imports
 import os
 import configparser
@@ -25,41 +23,39 @@ instrucciones = '''
     Exemple ".py -a motor -c QAS"
 
     --help               --Show help'''
-#try:
+try:
     # configparser for get configurations
-cur_path = os.path.dirname(__file__)
+    cur_path = os.path.dirname(__file__)
 
-Config = configparser.ConfigParser()
-Config.read(cur_path + '/configs/config.ini')
+    Config = configparser.ConfigParser()
+    Config.read(cur_path + '/configs/config.ini')
 
-# Information of server and location cennctions
-server_location = Config['server']['server_location']
-server_name = Config['server']['server_name']
-was_location = Config['server']['was_location']
+    # Information of server and location cennctions
+    server_location = Config['server']['server_location']
+    server_name = Config['server']['server_name']
+    was_location = Config['server']['was_location']
 
-connections_list = Config['connections']
+    connections_list = Config['connections']
 
-# direcctories of aplications
-for app_list in Config['applications']:
-    aplications_list.append(conexiones_.aplicacion(
-                            app_list, Config['applications'][app_list], was_location,
-                            connections_list[app_list]))
+    # direcctories of aplications
+    for app_list in Config['applications']:
+        aplications_list.append(conexiones_.aplicacion(
+                                app_list, Config['applications'][app_list], was_location,
+                                connections_list[app_list]))
 
-if len(sys.argv) > 1:
-    if sys.argv[1] == '-menu' or sys.argv[1] == '-MENU':
-        print("Estas entrando al menu")
-        conexiones_.showMenu(aplications_list, server_name, server_location)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '-menu' or sys.argv[1] == '-MENU':
+            print("Estas entrando al menu")
+            conexiones_.showMenu(aplications_list, server_name, server_location)
 
-    elif sys.argv[1] == '-gui' or sys.argv[1] == '-GUI':
-        conexiones_gui.showGui(aplications_list, server_name, server_location)
-    else:
-        if conexiones_.config_with_command(sys.argv, aplications_list, server_name, server_location):
-            exit()
+        elif sys.argv[1] == '-gui' or sys.argv[1] == '-GUI':
+            conexiones_gui.showGui(aplications_list, server_name, server_location)
         else:
-            print(instrucciones)
-else:
-    print(instrucciones)
-# except Exception as e:
-#     print("\n\nSorry the configuration is bad please read the confiuration in the file README.md or is a problem with the code please report franevarez@gmail.com\n")
-#     if debug_mode:
-#         print(e)
+            if conexiones_.config_with_command(sys.argv, aplications_list, server_name, server_location):
+                exit()
+            else:
+                print(instrucciones)
+    else:
+        print(instrucciones)
+except Exception as e:
+    print("\n\nSorry the configuration is bad please read the confiuration in the file README.md or is a problem with the code please report franevarez@gmail.com\n")
