@@ -18,29 +18,35 @@ class aplicacion():
                 print(self.dir+connection_list+'-'+self.dir_app)
                 self.conexionActual = connection_list
 
-    def changeConnection(self):
+    def changeConnection(self, Conexion_Input):
         print("intenta hacer el cambio")
-        if self.conexionActual == 'DES':
-            self.cambioQAS()
-        if self.conexionActual == 'QAS':
-            self.cambioDES()
-        self.updateStatus()
+        
+        if self.connection_list[Conexion_Input] != self.conexionActual:
+            print("intenta hacer cambio a ", self.connection_list[Conexion_Input])
+            
+            os.rename(self.dir+self.dir_app, self.dir+self.conexionActual+"-"+self.dir_app)
+            os.rename(self.dir+self.connection_list[Conexion_Input]+"-"+self.dir_app, self.dir+self.dir_app)
+        
+#         if self.conexionActual == 'DES':
+#             self.cambioQAS()
+#         if self.conexionActual == 'QAS':
+#             self.cambioDES()
+#         self.updateStatus()
 
     #Funciones para cambiar los directorios de conexiones
-    def cambioDES(self):
-        print("intenta hacer el DES")
-        os.rename(self.dir+self.dir_app, self.dir+"QAS-"+self.dir_app)
-        os.rename(self.dir+"DES-"+self.dir_app, self.dir+self.dir_app)
-
-    def cambioQAS(self):
-        print("intenta hacer el QAS")
-        os.rename(self.dir+self.dir_app, self.dir+"DES-"+self.dir_app)
-        os.rename(self.dir+"QAS-"+self.dir_app, self.dir+self.dir_app)
+#     def cambioDES(self):
+#         print("intenta hacer el DES")
+#         os.rename(self.dir+self.dir_app, self.dir+"QAS-"+self.dir_app)
+#         os.rename(self.dir+"DES-"+self.dir_app, self.dir+self.dir_app)
+# 
+#     def cambioQAS(self):
+#         print("intenta hacer el QAS")
+#         os.rename(self.dir+self.dir_app, self.dir+"DES-"+self.dir_app)
+#         os.rename(self.dir+"QAS-"+self.dir_app, self.dir+self.dir_app)
 
 def showMenu(aplicaciones ,server,server_location):
     banderaReStart = False #
     while True:
-
         if os.name == "nt":
             os.system("cls")
 
@@ -60,14 +66,14 @@ def showMenu(aplicaciones ,server,server_location):
         print("\n0 .- Salir\n\n")
 
         #input de opcion seleccionada
-        ConexionInput = int(input('¿Que conexion desea cambiar?: '))
+        aplicacion_Input = int(input('¿Que conexion desea cambiar?: '))
 
         #Compara que conexion tiene asignada para realizar el cambio}
 
-        if ConexionInput != 0:
+        if aplicacion_Input != 0:
             banderaReStart = True
 
-        if ConexionInput == 0:
+        if aplicacion_Input == 0:
             print('\n\nQue tengas en buen día ;)')
             if banderaReStart:
                 os.system(server_location+'\\stopServer '+server)
@@ -77,8 +83,17 @@ def showMenu(aplicaciones ,server,server_location):
                 #shell.SendKeys('^+R', 0)
             exit()
         else:
-            ConexionInput -=1
-            aplicaciones[ConexionInput].changeConnection()
+            indice = 1
+            print("Que conexion desea asiganar\n")
+            for list_conection in aplicaciones[aplicacion_Input-1].connection_list:
+                print((indice), '.- ', list_conection)
+                indice += 1
+                
+            Conexion_Input = int(input('¿Que conexion desea cambiar?: '))
+            
+            aplicaciones[ConexionInput].changeConnection(Conexion_Input)
+#             ConexionInput -=1
+#             aplicaciones[ConexionInput].changeConnection()
 
 def config_with_command(comandos, aplications_list):
     try:
