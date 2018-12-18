@@ -58,4 +58,5 @@ try:
     else:
         print(instrucciones)
 except Exception as e:
-    print("\n\nSorry the configuration is bad please read the confiuration in the file README.md or is a problem with the code please report franevarez@gmail.com\n")
+    print("""\n\nSorry the configuration is bad please read the confiuration 
+    in the file README.md or is a problem with the code please report franevarez@gmail.com\n""")
