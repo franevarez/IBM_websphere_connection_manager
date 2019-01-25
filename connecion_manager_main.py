@@ -25,7 +25,7 @@ instrucciones = '''
     --help               --Show help'''
 try:
     # configparser for get configurations
-    cur_path = os.path.dirname(__file__)
+    cur_path = os.path.dirname(os.path.abspath(__file__))
 
     Config = configparser.ConfigParser()
     Config.read(cur_path + '/configs/config.ini')
