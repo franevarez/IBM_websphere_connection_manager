@@ -42,13 +42,17 @@ class aplicacion():
 
 
 def showMenu(aplicaciones, server, server_location):
-    banderaReStart = False #
+    banderaReStart = False 
+    banderaNoselecc = False
     while True:
         if os.name == "nt":
             os.system("cls")
 
         elif os.name == "posix":
             os.system("clear")
+
+        if banderaNoselecc:
+            print("\033[93m La aplicacion que selecciono no esta disponible, favor de elegir otra o salir.\033[0m\n")
 
            # Menu de seleccion
         print("Elige a que aplicacion le deseas cambiar la conexion\n")
@@ -78,16 +82,27 @@ def showMenu(aplicaciones, server, server_location):
                 #shell.AppActivate("firefox")
                 #shell.SendKeys('^+R', 0)
             exit()
-        else:
-            indice = 1
-            print("Que conexion desea asiganar\n")
-            for list_conection in aplicaciones[aplicacion_Input-1].connection_list:
-                print((indice), '.- ', list_conection)
-                indice += 1
+
+        elif aplicacion_Input < len(aplicaciones):
+            appV = aplicaciones[aplicacion_Input-1]
+            if len(appV.connection_list) > 2:
+                indice = 1
+                print("Que conexion desea asiganar\n")
+                for list_conection in appV.connection_list:
+                    print((indice), '.- ', list_conection)
+                    indice += 1
+                    
+                Conexion_Input = int(input('¿Que conexion desea cambiar?: '))
                 
-            Conexion_Input = int(input('¿Que conexion desea cambiar?: '))
-            
-            aplicaciones[aplicacion_Input -1].changeConnectionMenu(Conexion_Input-1)
+                appV.changeConnectionMenu(Conexion_Input-1)
+            else:
+                if appV.connection_list[0] == appV.conexionActual:
+                    appV.changeConnectionMenu(1)
+                else:
+                     appV.changeConnectionMenu(0)
+        else:
+            banderaNoselecc = True
+                
 
 
 def config_with_command(comandos, aplications_list, server, server_location):

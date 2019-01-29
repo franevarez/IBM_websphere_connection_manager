@@ -4,6 +4,7 @@
 import os
 import configparser
 import sys
+import traceback
     
 # import win32com.client
 
@@ -29,6 +30,8 @@ try:
 
     Config = configparser.ConfigParser()
     Config.read(cur_path + '/configs/config.ini')
+
+    print(cur_path)
 
     # Information of server and location cennctions
     server_location = Config['server']['server_location']
@@ -58,5 +61,6 @@ try:
     else:
         print(instrucciones)
 except Exception as e:
+    print(traceback.print_exc())
     print("""\n\nSorry the configuration is bad please read the confiuration 
     in the file README.md or is a problem with the code please report franevarez@gmail.com\n""")
